@@ -154,16 +154,18 @@
             $test_category = new Category($name, $id);
             $test_category->save();
 
-            $name2 = "Home stuff";
+            $description = "File reports";
             $id2 = 2;
-            $test_category2 = new Category($name2, $id2);
-            $test_category2->save();
+            $test_due_date = "2015-09-16";
+            $test_task = new Task($description, $id2, $test_due_date);
+            $test_task->save();
 
             //Act
+            $test_category->addTask($test_task);
             $test_category->delete();
 
             //Assert
-            $this->assertEquals([$test_category2], Category::getAll());
+            $this->assertEquals([], $test_task->getCategories());
         }
 
         function testAddTask()
