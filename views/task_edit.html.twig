@@ -15,6 +15,10 @@
 
                 <button type='submit'>Update</button>
             </form>
+            <form action='/tasks/{{ task.getId }}' method='post'>
+                <input name='_method' type='hidden' value='delete'>
+                <button type=submit>Delete this task</button>
+            </form>
         </div>
     </body>
 </html>
