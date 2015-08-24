@@ -229,6 +229,23 @@
             $this->assertEquals([], $test_category->getTasks());
         }
 
+        function testComplete()
+        {
+            //Arrange
+            $description = "Wash the dog";
+            $id = 1;
+            $due_date = "2015-04-01";
+            $complete = 0;
+            $test_task = new Task($description, $id, $due_date, $complete);
+            $test_task->save();
+
+            //Act
+            $test_task->complete();
+
+            //Assert
+            $this->assertEquals(1, $test_task->getComplete());
+        }
+
     }
 
 

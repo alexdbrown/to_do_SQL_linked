@@ -4,12 +4,14 @@ class Task
     private $description;
     private $id;
     private $due_date;
+    private $complete;
 
-    function __construct($description, $id = null, $due_date)
+    function __construct($description, $id = null, $due_date, $complete = 0)
     {
         $this->description = $description;
         $this->id = $id;
         $this->due_date = $due_date;
+        $this->complete = (int) $complete;
     }
 
     function setDescription($new_description)
@@ -37,7 +39,15 @@ class Task
         $this->due_date = $new_due_date;
     }
 
+    function getComplete()
+    {
+        return $this->complete();
+    }
 
+    function setComplete($new_complete)
+    {
+        $this->complete = (int) $new_complete;
+    }
 
     function save()
     {
@@ -47,7 +57,6 @@ class Task
 
         );");
         $this->id = $GLOBALS['DB']->lastInsertId();
-
     }
 
     static function getAll()
@@ -117,6 +126,12 @@ class Task
     {
         $GLOBALS['DB']->exec("DELETE FROM tasks WHERE id = {$this->getId()};");
         $GLOBALS['DB']->exec("DELETE FROM categories_tasks WHERE task_id = {$this->getId()};");
+    }
+
+    function complete()
+    {
+        $GLOBALS['DB']->exec("UPDATE tasks SET complete = 1 WHERE id = {$this->getId()};");
+        $this->setComplete(1);
     }
 
 }
