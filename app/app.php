@@ -16,6 +16,9 @@
         'twig.path' => __DIR__.'/../views'
     ));
 
+    use Symfony\Component\HttpFoundation\Request;
+    Request::enableHttpMethodParameterOverride();
+
     $app['twig']->getExtension('core')->setTimezone('America/Los_Angeles');
 
     $app->get("/", function() use ($app) {
@@ -68,12 +71,36 @@
         return $app['twig']->render('task.html.twig', array('task' => $task, 'tasks' => Task::getAll(), 'categories' => $task->getCategories(), 'all_categories' => Category::getAll()));
     });
 
+    $app->get("/categories/{id}/edit", function($id) use ($app) {
+        $category = Category::find($id);
+        return $app['twig']->render('category_edit.html.twig', array('category' => $category));
+    });
+
+    $app->patch("/categories/{id}", function($id) use($app) {
+        $name = $_POST['name'];
+        $category = Category::find($id);
+        $category->update($name);
+        return $app['twig']->render('category.html.twig', array('category' => $category, 'tasks' => $category->getTasks(), 'all_tasks' => Task::getAll()));
+    });
+
+    $app->get("/tasks/{id}/edit", function($id) use ($app) {
+        $task = Task::find($id);
+        return $app['twig']->render('task_edit.html.twig', array('task' => $task));
+    });
+
+    $app->patch("/tasks/{id}", function($id) use ($app) {
+        $description = $_POST['description'];
+        $task = Task::find($id);
+        $task->update($description);
+        return $app['twig']->render('task.html.twig', array('task' => $task, 'all_categories' => Category::getAll(), 'categories' => $task->getCategories()));
+    });
 
     $app->post("/delete_categories", function() use ($app) {
         Category::deleteAll();
         return $app['twig']->render('index.html.twig', array('categories' => Category::getAll()));
     });
-    
+
+
     $app->post("/delete_tasks", function() use ($app) {
         Task::deleteAll();
         return $app['twig']->render('index.html.twig', array('categories' => Category::getAll()));
